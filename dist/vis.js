@@ -1,3 +1,4 @@
+//TESTCOMMIT
 /**
  * vis.js
  * https://github.com/almende/vis
@@ -22,7 +23,6 @@
  *
  * Vis.js may be distributed under either license.
  */
-
 "use strict";
 
 (function webpackUniversalModuleDefinition(root, factory) {
