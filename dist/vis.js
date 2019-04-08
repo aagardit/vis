@@ -12219,7 +12219,7 @@ Group.prototype._updateSubGroupHeights = function (margin) {
 
     util.forEach(this.visibleItems, function (item) {
       if (item.data.subgroup !== undefined) {
-        me.subgroups[item.data.subgroup].height = 15; //Math.max(me.subgroups[item.data.subgroup].height, item.height + margin.item.vertical);
+        me.subgroups[item.data.subgroup].height = Math.max(me.subgroups[item.data.subgroup].height, item.height + margin.item.vertical);
         me.subgroups[item.data.subgroup].visible = true;
       }
     });
