@@ -5,7 +5,7 @@
  * A dynamic, browser-based visualization library.
  *
  * @version 5.0.1
- * @date    2019-04-08
+ * @date    2019-04-09
  *
  * @license
  * Copyright (C) 2011-2017 Almende B.V, http://almende.com
@@ -12255,7 +12255,7 @@ Group.prototype._calculateHeight = function (margin) {
       min = Math.min(min, item.top);
       max = Math.max(max, item.top + item.height);
     });
-    if (min > margin.axis) {
+    if (min > margin.axis + margin.groupTBPadding) {
       // there is an empty gap between the lowest item and the axis
       var offset = min - margin.axis;
       max -= offset;
@@ -12263,7 +12263,7 @@ Group.prototype._calculateHeight = function (margin) {
         item.top -= offset;
       });
     }
-    height = max + margin.item.vertical / 2;
+    height = margin.groupTBPadding + max + margin.item.vertical / 2;
   } else {
     height = 0;
   }
@@ -17550,7 +17550,8 @@ function ItemSet(body, options) {
         horizontal: 10,
         vertical: 10
       },
-      axis: 20
+      axis: 20,
+      groupTBPadding: 0
     },
 
     showTooltips: true,
@@ -17854,6 +17855,7 @@ ItemSet.prototype.setOptions = function (options) {
         this.options.margin.item.vertical = options.margin;
       } else if ((0, _typeof3['default'])(options.margin) === 'object') {
         util.selectiveExtend(['axis'], this.options.margin, options.margin);
+        util.selectiveExtend(['groupTBPadding'], this.options.margin, options.margin);
         if ('item' in options.margin) {
           if (typeof options.margin.item === 'number') {
             this.options.margin.item.horizontal = options.margin.item;
@@ -18123,11 +18125,13 @@ ItemSet.prototype.redraw = function () {
   var firstGroup = this._firstGroup();
   var firstMargin = {
     item: margin.item,
-    axis: margin.axis
+    axis: margin.axis,
+    groupTBPadding: margin.groupTBPadding
   };
   var nonFirstMargin = {
     item: margin.item,
-    axis: margin.item.vertical / 2
+    axis: margin.item.vertical / 2,
+    groupTBPadding: margin.groupTBPadding
   };
   var height = 0;
   var minHeight = margin.axis + margin.item.vertical;
@@ -19844,7 +19848,7 @@ exports.stack = function (items, margin, force) {
     var item = items[i];
     if (item.stack && item.top === null) {
       // initialize top position
-      item.top = margin.axis;
+      item.top = margin.axis + (margin.groupTBPadding === undefined ? 0 : margin.groupTBPadding);
 
       do {
         // TODO: optimize checking for overlap. when there is a gap without items,
@@ -19891,7 +19895,7 @@ exports.substack = function (items, margin, subgroup) {
 
     if (item.stack && item.top === null) {
       // initialize top position
-      item.top = item.baseTop; //margin.axis + item.baseTop;
+      item.top = item.baseTop + (margin.groupTBPadding === undefined ? 0 : margin.groupTBPadding); //margin.axis + item.baseTop;
 
       do {
         // TODO: optimize checking for overlap. when there is a gap without items,
@@ -21239,6 +21243,7 @@ var allOptions = {
       vertical: { number: number, 'undefined': 'undefined' },
       __type__: { object: object, number: number }
     },
+    groupTBPadding: { number: number },
     __type__: { object: object, number: number }
   },
   max: { date: date, number: number, string: string, moment: moment },
@@ -21350,7 +21355,8 @@ var configureOptions = {
       item: {
         horizontal: [10, 0, 100, 1],
         vertical: [10, 0, 100, 1]
-      }
+      },
+      groupTBPadding: [10, 0, 100, 1]
     },
     max: '',
     maxHeight: '',
